@@ -66,7 +66,7 @@ tailor = Building("tailor", Image.open("tailor.png"), FMap())
 policestation = Building("police station", Image.open("policestation.png"), Map())
 fountain = Building("fountain", Image.open("fountain.png"), Map())
 museum = Building("museum", Image.open("museum.png"), Map())
-aBuildings = [shop, dump, postoffice, tailor, policestation, fountain, museum]
+buildings = [shop, dump, postoffice, tailor, policestation, fountain, museum]
 
 def main():
 	fileCount = 0
@@ -77,7 +77,7 @@ def main():
 		if file.endswith(".png"):
 			fileCount += 1
 			im = Image.open(directory+file)
-			for building in aBuildings:
+			for building in buildings:
 				lowestdiff = 100
 				bestmatch = 0
 				for mapsquare in building.acmap.squares:
@@ -90,10 +90,10 @@ def main():
 				bestmatch.count += 1
 				building.count += 1
 					
-	for building in aBuildings:
-		print(str(building.name)+": "+str(building.count))
+	for building in buildings:
+		print(str(building.name))
 		for mapsquare in building.acmap.squares:
-					print("\t"+str(mapsquare.name)+": "+str(mapsquare.count)+"\t"+str((mapsquare.count/building.count)*100)+"%")	
+					print("\t"+str(mapsquare.name)+":\t"+str(mapsquare.count)+"\t"+str((mapsquare.count/building.count)*100)+"%")	
 	print("files: "+str(fileCount))
 if __name__ == "__main__":
 	main()
