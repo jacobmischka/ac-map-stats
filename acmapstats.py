@@ -1,5 +1,5 @@
 from PIL import Image, ImageChops
-import sys, math, operator, functools, os
+import sys, math, operator, functools, os, time
 
 class MapSquare(object):
 	
@@ -69,8 +69,9 @@ museum = Building("museum", Image.open("museum.png"), Map())
 buildings = [shop, dump, postoffice, tailor, policestation, fountain, museum]
 
 def main():
+	startTime = time.time()
 	fileCount = 0
-	directory = "."
+	directory = "./"
 	if sys.argv[1]:
 		directory = sys.argv[1]
 	for file in os.listdir(directory):
@@ -91,9 +92,13 @@ def main():
 				building.count += 1
 					
 	for building in buildings:
-		print(str(building.name))
+		print(str("\n"+building.name))
 		for mapsquare in building.acmap.squares:
 					print("\t"+str(mapsquare.name)+":\t"+str(mapsquare.count)+"\t"+str((mapsquare.count/building.count)*100)+"%")	
-	print("files: "+str(fileCount))
+	print("\nmaps: "+str(fileCount))
+	print("elapsed time: "+str(time.time()-startTime)+" seconds")
+	
+	
+	
 if __name__ == "__main__":
 	main()
