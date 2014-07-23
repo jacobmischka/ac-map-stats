@@ -176,7 +176,8 @@ def main():
 				colors = region.getcolors(maxcolors=1000)
 				
 				for color in colors:
-					if color[1] == (145, 70, 205, 255) or color[1] == (90, 90, 225, 255) or color[1] == (170, 115, 20, 255):
+					#blue house = (90, 90, 225, 255)	purple house = (145, 70, 205, 255)	yellow house = (170, 115, 20, 255)
+					if color[1] == (90, 90, 225, 255) or color[1] == (145, 70, 205, 255) or color[1] == (170, 115, 20, 255):
 						if "e" in square.name or "f" in square.name:
 							housesOkay = False
 				
