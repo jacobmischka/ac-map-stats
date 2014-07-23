@@ -53,16 +53,6 @@ class Map(object):
 		self.e5 = MapSquare("e5", [629, 387])
 		
 		self.squares = [self.c1, self.c2, self.c3, self.c4, self.c5, self.d1, self.d2, self.d3, self.d4, self.d5, self.e1, self.e2, self.e3, self.e4, self.e5]
-		
-class OneMap(object):
-	def __init__(self):
-		self.b1 = MapSquare("c1", [409, 249])
-		self.c1 = MapSquare("c1", [409, 305])
-		self.d1 = MapSquare("c1", [409, 361])
-		self.e1 = MapSquare("e1", [409, 417])
-		
-		self.squares = [MapSquare("c1", [409, 249]), MapSquare("c1", [409, 305]), MapSquare("c1", [409, 361]), MapSquare("e1", [409, 417])]
-	
 
 def rms(img1, img2):
 	h = ImageChops.difference(img1, img2).histogram()
@@ -105,6 +95,8 @@ def main():
 							
 				bestmatch.count += 1
 				building.count += 1
+				if bestmatch.name == "c2" or bestmatch.name == "c3" or bestmatch.name == "c4":
+					print(str(file))
 				
 			for square in cliffSquares:
 				region = im.crop((square.coordinates[0], square.coordinates[1], square.coordinates[0]+12, square.coordinates[1]+16))
