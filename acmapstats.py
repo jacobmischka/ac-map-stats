@@ -118,8 +118,8 @@ def main():
 			elif layers == 3:
 				threeLayers += 1
 					
-	print("two layers:\t"+str(twoLayers)+"\t"+str(twoLayers/fileCount)+"%")
-	print("three layers:\t"+str(threeLayers)+"\t"+str(threeLayers/fileCount)+"%")
+	print("two layers:\t"+str(twoLayers)+"\t"+str((twoLayers/fileCount)*100)+"%")
+	print("three layers:\t"+str(threeLayers)+"\t"+str((threeLayers/fileCount)*100)+"%")
 	
 	for building in buildings:
 		print(str("\n"+building.name))
