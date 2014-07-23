@@ -109,7 +109,6 @@ def main():
 			for square in cliffSquares:
 				region = im.crop((square.coordinates[0], square.coordinates[1], square.coordinates[0]+12, square.coordinates[1]+16))
 				diff = rms(region, cliff)
-				print(str(file)+" "+str(square.name)+" "+str(diff))
 				if diff < 20:
 					layers += 1
 					
