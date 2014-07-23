@@ -53,6 +53,15 @@ class Map(object):
 		self.e5 = MapSquare("e5", [629, 387])
 		
 		self.squares = [self.c1, self.c2, self.c3, self.c4, self.c5, self.d1, self.d2, self.d3, self.d4, self.d5, self.e1, self.e2, self.e3, self.e4, self.e5]
+		
+class OneMap(object):
+	def __init__(self):
+		self.b1 = MapSquare("c1", [409, 249])
+		self.c1 = MapSquare("c1", [409, 305])
+		self.d1 = MapSquare("c1", [409, 361])
+		self.e1 = MapSquare("e1", [409, 417])
+		
+		self.squares = [MapSquare("c1", [409, 249]), MapSquare("c1", [409, 305]), MapSquare("c1", [409, 361]), MapSquare("e1", [409, 417])]
 	
 
 def rms(img1, img2):
@@ -68,9 +77,14 @@ fountain = Building("fountain", Image.open("fountain.png"), Map())
 museum = Building("museum", Image.open("museum.png"), Map())
 buildings = [shop, dump, postoffice, tailor, policestation, fountain, museum]
 
+cliff = Image.open("cliff.png")
+cliffSquares = [MapSquare("b1", [409, 249]), MapSquare("c1", [409, 305]), MapSquare("d1", [409, 361]), MapSquare("e1", [409, 417])]
+
 def main():
 	startTime = time.time()
 	fileCount = 0
+	twoLayers = 0
+	threeLayers = 0
 	directory = "./"
 	if sys.argv[1]:
 		directory = sys.argv[1]
@@ -78,19 +92,35 @@ def main():
 		if file.endswith(".png"):
 			fileCount += 1
 			im = Image.open(directory+file)
+			layers = 1
 			for building in buildings:
 				lowestdiff = 100
 				bestmatch = 0
 				for mapsquare in building.acmap.squares:
 					region = im.crop((mapsquare.coordinates[0], mapsquare.coordinates[1], mapsquare.coordinates[0]+50, mapsquare.coordinates[1]+50))
 					diff = rms(region, building.img)
-					if(diff < lowestdiff):
+					if diff < lowestdiff:
 						lowestdiff = diff
 						bestmatch = mapsquare
 							
 				bestmatch.count += 1
 				building.count += 1
+				
+			for square in cliffSquares:
+				region = im.crop((square.coordinates[0], square.coordinates[1], square.coordinates[0]+12, square.coordinates[1]+16))
+				diff = rms(region, cliff)
+				print(str(file)+" "+str(square.name)+" "+str(diff))
+				if diff < 20:
+					layers += 1
 					
+			if layers == 2:
+				twoLayers += 1
+			elif layers == 3:
+				threeLayers += 1
+					
+	print("two layers:\t"+str(twoLayers)+"\t"+str(twoLayers/fileCount)+"%")
+	print("three layers:\t"+str(threeLayers)+"\t"+str(threeLayers/fileCount)+"%")
+	
 	for building in buildings:
 		print(str("\n"+building.name))
 		for mapsquare in building.acmap.squares:
