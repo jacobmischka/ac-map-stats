@@ -87,7 +87,13 @@ class HouseMap(object):
 		self.e4 = MapSquare("e4", [575, 387])
 		self.e5 = MapSquare("e5", [629, 387])
 		
-		self.squares = [self.b1, self.b2, self.b3, self.b4, self.b5, self.c1, self.c2, self.c3, self.c4, self.c5, self.d1, self.d2, self.d3, self.d4, self.d5, self.e1, self.e2, self.e3, self.e4, self.e5]
+		self.f1 = MapSquare("f1", [411, 443])
+		self.f2 = MapSquare("f2", [466, 443])
+		self.f3 = MapSquare("f3", [520, 443])
+		self.f4 = MapSquare("f4", [575, 443])
+		self.f5 = MapSquare("f5", [629, 443])
+		
+		self.squares = [self.b1, self.b2, self.b3, self.b4, self.b5, self.c1, self.c2, self.c3, self.c4, self.c5, self.d1, self.d2, self.d3, self.d4, self.d5, self.e1, self.e2, self.e3, self.e4, self.e5, self.f1, self.f2, self.f3, self.f4, self.f5]
 
 def rms(img1, img2):
 	h = ImageChops.difference(img1, img2).histogram()
@@ -105,7 +111,7 @@ buildings = [shop, dump, postoffice, tailor, policestation, fountain, museum]
 cliff = Image.open("cliff.png")
 cliffSquares = [MapSquare("b1", [409, 249]), MapSquare("c1", [409, 305]), MapSquare("d1", [409, 361]), MapSquare("e1", [409, 417])]
 
-houseMap = Map()
+houseMap = HouseMap()
 
 def main():
 	startTime = time.time()
