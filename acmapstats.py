@@ -1,6 +1,6 @@
 from PIL import Image, ImageChops
-import sys, math, operator, functools, os, time, shutil
-
+import sys, math, operator, functools, os, time, shutil, multiprocessing
+from multiprocessing.managers import BaseManager
 import re
 def sort_nicely( l ):
 	convert = lambda text: int(text) if text.isdigit() else text
@@ -13,7 +13,7 @@ class MapSquare(object):
 	def __init__(self, name, coordinates):
 		self.name = name
 		self.coordinates = coordinates
-		self.count = 0
+		self.count = multiprocessing.Value("i", 0)
 
 class Building(object):
 	
@@ -21,7 +21,7 @@ class Building(object):
 		self.name = name
 		self.img = img
 		self.acmap = acmap
-		self.count = 0
+		self.count = multiprocessing.Value("i", 0)
 		
 class AMap(object):
 	def __init__(self):
@@ -98,114 +98,158 @@ class HouseMap(object):
 def rms(img1, img2):
 	h = ImageChops.difference(img1, img2).histogram()
 	return math.sqrt(functools.reduce(operator.add, map(lambda h, i: h*(i**2), h, range(256)))/(float(img1.size[0]) * img1.size[1]))
+
+def do_work(file, shopImg, dumpImg, postImg, tailorImg, policeImg, fountainImg, museumImg, cliffImg, fileCount, twoLayers, threeLayers, directory, skip, possiblyDecentMaps, printStats):
+	if file.endswith(".png"):
+		fileCount.value += 1
+		if fileCount.value <= skip:
+			return
+		im = Image.open(directory+file)
+		layers = 1
+		shop = 0
+		post = 0
+		fountain = 0
+		housesOkay = True
+		for building in buildings:
+			lowestdiff = 100
+			bestmatch = 0
+			if building.name == "shop":
+				buildingImg = shopImg
+			elif building.name == "dump":
+				buildingImg = dumpImg
+			elif building.name == "post office":
+				buildingImg = postImg
+			elif building.name == "tailor":
+				buildingImg = tailorImg
+			elif building.name == "police station":
+				buildingImg = policeImg
+			elif building.name == "fountain":
+				buildingImg = fountainImg
+			elif building.name == "museum":
+				buildingImg = museumImg
+				
+			for mapsquare in building.acmap.squares:
+				region = im.crop((mapsquare.coordinates[0], mapsquare.coordinates[1], mapsquare.coordinates[0]+50, mapsquare.coordinates[1]+50))
+				diff = rms(region, buildingImg)
+				if diff < lowestdiff:
+					lowestdiff = diff
+					bestmatch = mapsquare
+						
+			bestmatch.count.value += 1
+			building.count.value += 1
+			if building.name == "shop":
+				shop = bestmatch
+			elif building.name == "post office":
+				post = bestmatch
+			elif building.name == "fountain":
+				fountain = bestmatch
+				
+			if  bestmatch.name == "c2" or bestmatch.name == "c3" or bestmatch.name == "c4":
+				print(str(file))
+		
+		for square in cliffSquares:
+			region = im.crop((square.coordinates[0], square.coordinates[1], square.coordinates[0]+12, square.coordinates[1]+16))
+			diff = rms(region, cliffImg)
+			if diff < 20:
+				layers += 1
+				
+		if layers == 2:
+			twoLayers.value += 1
+		elif layers == 3:
+			threeLayers.value += 1
+			
+		for square in houseMap.squares:
+			region = im.crop((square.coordinates[0], square.coordinates[1], square.coordinates[0]+54, square.coordinates[1]+56))
+			colors = region.getcolors(maxcolors=1000)
+			
+			for color in colors:
+				#blue house = (90, 90, 225, 255)	purple house = (145, 70, 205, 255)	yellow house = (170, 115, 20, 255)
+				if color[1] == (90, 90, 225, 255) or color[1] == (145, 70, 205, 255) or color[1] == (170, 115, 20, 255):
+					if "e" in square.name or "f" in square.name:
+						housesOkay = False
+			
+		if (housesOkay and ((shop.name == "a2" and post.name == "a4") or (shop.name == "a4" and post.name == "a2")) and not (fountain.name == "e1" or fountain.name == "e5" or (layers == 3 and "e" in fountain.name))):
+			if not os.path.exists(directory+"maybe/"):
+				os.makedirs(directory+"maybe/")
+			shutil.copy(directory+file, directory+"maybe/"+file)
+			possiblyDecentMaps.value += 1
+		
+def worker(fileCount, twoLayers, threeLayers, directory, skip, possiblyDecentMaps, printStats):
+	shopImg = Image.open(shop.img)
+	dumpImg = Image.open(dump.img)
+	postImg = Image.open(postoffice.img)
+	tailorImg = Image.open(tailor.img)
+	policeImg = Image.open(policestation.img)
+	fountainImg = Image.open(fountain.img)
+	museumImg = Image.open(museum.img)
+	cliffImg = Image.open(cliff)
+	while True:
+		file = q.get()
+		do_work(file, shopImg, dumpImg, postImg, tailorImg, policeImg, fountainImg, museumImg, cliffImg, fileCount, twoLayers, threeLayers, directory, skip, possiblyDecentMaps, printStats)
+		q.task_done()
 	
-shop = Building("shop", Image.open("shop.png"), AMap())
-dump = Building("dump", Image.open("dump.png"), AMap())
-postoffice = Building("post office", Image.open("postoffice.png"), AMap())
-tailor = Building("tailor", Image.open("tailor.png"), FMap())
-policestation = Building("police station", Image.open("policestation.png"), Map())
-fountain = Building("fountain", Image.open("fountain.png"), Map())
-museum = Building("museum", Image.open("museum.png"), Map())
-buildings = [shop, dump, postoffice, tailor, policestation, fountain, museum]
-
-cliff = Image.open("cliff.png")
-cliffSquares = [MapSquare("b1", [409, 249]), MapSquare("c1", [409, 305]), MapSquare("d1", [409, 361]), MapSquare("e1", [409, 417])]
-
-houseMap = HouseMap()
-
-def main():
-	startTime = time.time()
-	fileCount = 0
-	twoLayers = 0
-	threeLayers = 0
+if __name__ == "__main__":
+	q = multiprocessing.JoinableQueue()
+	fileCount = multiprocessing.Value("i", 0)
+	twoLayers = multiprocessing.Value("i", 0)
+	threeLayers = multiprocessing.Value("i", 0)
 	directory = "./"
 	skip = 0
-	possiblyDecentMaps = 0
+	possiblyDecentMaps = multiprocessing.Value("i", 0)
 	printStats = True
+	numThreads = 1
+	
+	shop = Building("shop", "shop.png", AMap())
+	dump = Building("dump", "dump.png", AMap())
+	postoffice = Building("post office", "postoffice.png", AMap())
+	tailor = Building("tailor", "tailor.png", FMap())
+	policestation = Building("police station", "policestation.png", Map())
+	fountain = Building("fountain", "fountain.png", Map())
+	museum = Building("museum", "museum.png", Map())
+	buildings = [shop, dump, postoffice, tailor, policestation, fountain, museum]
+
+	cliff = "cliff.png"
+	cliffSquares = [MapSquare("b1", [409, 249]), MapSquare("c1", [409, 305]), MapSquare("d1", [409, 361]), MapSquare("e1", [409, 417])]
+
+	houseMap = HouseMap()
+	
+	startTime = time.time()
+		
 	if len(sys.argv) > 1:
 		directory = sys.argv[1]
 	if len(sys.argv) > 2:
 		skip = int(sys.argv[2])
 	if len(sys.argv) > 3:
-		printStats = sys.argv[3]
+		numThreads = int(sys.argv[3])
+	if len(sys.argv) > 4:
+		printStats = sys.argv[4]
+	
+	jobs = []
+	for i in range(numThreads):
+		p = multiprocessing.Process(target=worker, args=(fileCount, twoLayers, threeLayers, directory, skip, possiblyDecentMaps, printStats))
+		p.daemon = True
+		jobs.append(p)
+		p.start()
 	
 	if printStats == 0 or printStats == "0" or printStats == "false":
 		printStats = False
 		
 	files = os.listdir(directory)
 	sort_nicely(files)
+	
 	for file in files:
-		if file.endswith(".png"):
-			fileCount += 1
-			if fileCount <= skip:
-				continue
-			im = Image.open(directory+file)
-			layers = 1
-			shop = 0
-			post = 0
-			fountain = 0
-			housesOkay = True
-			for building in buildings:
-				lowestdiff = 100
-				bestmatch = 0
-				for mapsquare in building.acmap.squares:
-					region = im.crop((mapsquare.coordinates[0], mapsquare.coordinates[1], mapsquare.coordinates[0]+50, mapsquare.coordinates[1]+50))
-					diff = rms(region, building.img)
-					if diff < lowestdiff:
-						lowestdiff = diff
-						bestmatch = mapsquare
-							
-				bestmatch.count += 1
-				building.count += 1
-				if building.name == "shop":
-					shop = bestmatch
-				if building.name == "post office":
-					post = bestmatch
-				elif building.name == "fountain":
-					fountain = bestmatch
-				elif  bestmatch.name == "c2" or bestmatch.name == "c3" or bestmatch.name == "c4":
-					print(str(file))
-			
-			for square in cliffSquares:
-				region = im.crop((square.coordinates[0], square.coordinates[1], square.coordinates[0]+12, square.coordinates[1]+16))
-				diff = rms(region, cliff)
-				if diff < 20:
-					layers += 1
-					
-			if layers == 2:
-				twoLayers += 1
-			elif layers == 3:
-				threeLayers += 1
-				
-			for square in houseMap.squares:
-				region = im.crop((square.coordinates[0], square.coordinates[1], square.coordinates[0]+54, square.coordinates[1]+56))
-				colors = region.getcolors(maxcolors=1000)
-				
-				for color in colors:
-					#blue house = (90, 90, 225, 255)	purple house = (145, 70, 205, 255)	yellow house = (170, 115, 20, 255)
-					if color[1] == (90, 90, 225, 255) or color[1] == (145, 70, 205, 255) or color[1] == (170, 115, 20, 255):
-						if "e" in square.name or "f" in square.name:
-							housesOkay = False
-				
-			if (housesOkay and ((shop.name == "a2" and post.name == "a4") or (shop.name == "a4" and post.name == "a2")) and not (fountain.name == "e1" or fountain.name == "e5" or (layers == 3 and "e" in fountain.name))):
-				if not os.path.exists(directory+"maybe/"):
-					os.makedirs(directory+"maybe/")
-				shutil.copy(directory+file, directory+"maybe/"+file)
-				possiblyDecentMaps += 1
+		q.put(file)
+	
+	q.join()
 	
 	if printStats:				
-		print("two layers:\t"+str(twoLayers)+"\t"+str((twoLayers/(fileCount-skip))*100)+"%")
-		print("three layers:\t"+str(threeLayers)+"\t"+str((threeLayers/(fileCount-skip))*100)+"%")
+		print("two layers:\t"+str(twoLayers.value)+"\t"+str((twoLayers.value/(fileCount.value-skip))*100)+"%")
+		print("three layers:\t"+str(threeLayers.value)+"\t"+str((threeLayers.value/(fileCount.value-skip))*100)+"%")
 		
 		for building in buildings:
 			print(str("\n"+building.name))
 			for mapsquare in building.acmap.squares:
-						print("\t"+str(mapsquare.name)+":\t"+str(mapsquare.count)+"\t"+str((mapsquare.count/building.count)*100)+"%")	
-		print("\nmaps: "+str((fileCount-skip)))
-		print("possibly decent maps: "+str(possiblyDecentMaps))
+						print("\t"+str(mapsquare.name)+":\t"+str(mapsquare.count.value)+"\t"+str((mapsquare.count.value/(fileCount.value-skip))*100)+"%")	
+		print("\nmaps: "+str((fileCount.value-skip)))
+		print("possibly decent maps: "+str(possiblyDecentMaps.value))
 		print("elapsed time: "+str(time.time()-startTime)+" seconds")
-	
-	
-	
-if __name__ == "__main__":
-	main()
