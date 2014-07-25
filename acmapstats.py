@@ -159,11 +159,11 @@ def main():
 				building.count += 1
 				if building.name == "shop":
 					shop = bestmatch
-				if building.name == "post office":
+				elif building.name == "post office":
 					post = bestmatch
 				elif building.name == "fountain":
 					fountain = bestmatch
-				elif  bestmatch.name == "c2" or bestmatch.name == "c3" or bestmatch.name == "c4":
+				if  bestmatch.name == "c2" or bestmatch.name == "c3" or bestmatch.name == "c4":
 					print(str(file))
 			
 			for square in cliffSquares:
