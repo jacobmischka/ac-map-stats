@@ -120,6 +120,8 @@ def main():
 	threeLayers = 0
 	directory = "./"
 	skip = 0
+	most = 0
+	current = 0
 	possiblyDecentMaps = 0
 	printStats = True
 	if len(sys.argv) > 1:
@@ -192,6 +194,11 @@ def main():
 					os.makedirs(directory+"maybe/")
 				shutil.copy(directory+file, directory+"maybe/"+file)
 				possiblyDecentMaps += 1
+				current = 0
+			else:
+				current += 1
+				if current > most:
+					most = current
 	
 	if printStats:				
 		print("two layers:\t"+str(twoLayers)+"\t"+str((twoLayers/(fileCount-skip))*100)+"%")
@@ -201,9 +208,10 @@ def main():
 			print(str("\n"+building.name))
 			for mapsquare in building.acmap.squares:
 						print("\t"+str(mapsquare.name)+":\t"+str(mapsquare.count)+"\t"+str((mapsquare.count/building.count)*100)+"%")	
-		print("\nmaps: "+str((fileCount-skip)))
-		print("possibly decent maps: "+str(possiblyDecentMaps))
-		print("elapsed time: "+str(time.time()-startTime)+" seconds")
+	print("\nmaps: "+str((fileCount-skip)))
+	print("possibly decent maps: "+str(possiblyDecentMaps))
+	print("Longest bad streak: " +str(most))
+	print("elapsed time: "+str(time.time()-startTime)+" seconds")
 	
 	
 	
