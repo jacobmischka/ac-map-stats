@@ -179,6 +179,10 @@ def main():
 			elif layers == 3:
 				threeLayers += 1
 				
+			c1 = False
+			c5 = False
+			belowShop = False
+
 			for square in houseMap.squares:
 				region = im.crop((square.coordinates[0], square.coordinates[1], square.coordinates[0]+54, square.coordinates[1]+56))
 				colors = region.getcolors(maxcolors=1000)
@@ -188,7 +192,19 @@ def main():
 					if color[1] == (90, 90, 225, 255) or color[1] == (145, 70, 205, 255) or color[1] == (170, 115, 20, 255):
 						if "e" in square.name or "f" in square.name:
 							housesOkay = False
-				
+						elif square.name == "d1" or square.name == "d5":
+							housesOkay = False
+						elif square.name == "c1":
+							c1 = True
+						elif square.name == "c5":
+							c5 = True
+						elif (shop.name == "a2" and square.name == "b2") or (shop.name == "a4" and square.name == "b4"):
+							belowShop = True
+			if c1 and c5:
+				housesOkay = False
+			elif belowShop == False:
+				housesOkay = False
+
 			if (housesOkay and ((shop.name == "a2" and post.name == "a4") or (shop.name == "a4" and post.name == "a2")) and not (fountain.name == "e1" or fountain.name == "e5" or (layers == 3 and "e" in fountain.name))):
 				if not os.path.exists(directory+"maybe/"):
 					os.makedirs(directory+"maybe/")
