@@ -158,6 +158,10 @@ def do_work(file, shopImg, dumpImg, postImg, tailorImg, policeImg, fountainImg, 
 		elif layers == 3:
 			threeLayers.value += 1
 			
+		c1 = False
+		c5 = False
+		belowShop = False
+			
 		for square in houseMap.squares:
 			region = im.crop((square.coordinates[0], square.coordinates[1], square.coordinates[0]+54, square.coordinates[1]+56))
 			colors = region.getcolors(maxcolors=1000)
@@ -165,14 +169,31 @@ def do_work(file, shopImg, dumpImg, postImg, tailorImg, policeImg, fountainImg, 
 			for color in colors:
 				#blue house = (90, 90, 225, 255)	purple house = (145, 70, 205, 255)	yellow house = (170, 115, 20, 255)
 				if color[1] == (90, 90, 225, 255) or color[1] == (145, 70, 205, 255) or color[1] == (170, 115, 20, 255):
-					if "e" in square.name or "f" in square.name:
-						housesOkay = False
+						if "e" in square.name or "f" in square.name:
+							housesOkay = False
+						elif square.name == "d1" or square.name == "d5":
+							housesOkay = False
+						elif square.name == "c1":
+							c1 = True
+						elif square.name == "c5":
+							c5 = True
+						elif (shop.name == "a2" and square.name == "b2") or (shop.name == "a4" and square.name == "b4"):
+							belowShop = True
+		if c1 and c5:
+			housesOkay = False
+		elif belowShop == False:
+			housesOkay = False
 			
 		if (housesOkay and ((shop.name == "a2" and post.name == "a4") or (shop.name == "a4" and post.name == "a2")) and not (fountain.name == "e1" or fountain.name == "e5" or (layers == 3 and "e" in fountain.name))):
 			if not os.path.exists(directory+"maybe/"):
 				os.makedirs(directory+"maybe/")
 			shutil.copy(directory+file, directory+"maybe/"+file)
 			possiblyDecentMaps.value += 1
+			current.value = 0
+		else:
+			current.value += 1
+			if current.value > most.value:
+				most.value = current.value
 		
 def worker(fileCount, twoLayers, threeLayers, directory, skip, possiblyDecentMaps, printStats):
 	shopImg = Image.open(shop.img)
@@ -195,6 +216,8 @@ if __name__ == "__main__":
 	threeLayers = multiprocessing.Value("i", 0)
 	directory = "./"
 	skip = 0
+	most = multiprocessing.Value("i", 0)
+	current = multiprocessing.Value("i", 0)
 	possiblyDecentMaps = multiprocessing.Value("i", 0)
 	printStats = True
 	numThreads = 1
@@ -252,4 +275,5 @@ if __name__ == "__main__":
 						print("\t"+str(mapsquare.name)+":\t"+str(mapsquare.count.value)+"\t"+str((mapsquare.count.value/(fileCount.value-skip))*100)+"%")	
 		print("\nmaps: "+str((fileCount.value-skip)))
 		print("possibly decent maps: "+str(possiblyDecentMaps.value))
+		print("Longest bad streak: " +str(most.value))
 		print("elapsed time: "+str(time.time()-startTime)+" seconds")
