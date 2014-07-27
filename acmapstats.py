@@ -33,10 +33,10 @@ class AMap(object):
 
 class FMap(object):
 	def __init__(self):
-		self.f1 = MapSquare("f1", [409, 441])
-		self.f2 = MapSquare("f2", [464, 441])
-		self.f3 = MapSquare("f3", [519, 441])
-		self.f4 = MapSquare("f4", [574, 441])
+		self.f1 = MapSquare("f1", [411, 442])
+		self.f2 = MapSquare("f2", [466, 442])
+		self.f3 = MapSquare("f3", [520, 442])
+		self.f4 = MapSquare("f4", [575, 442])
 		self.squares = [self.f1, self.f2, self.f3, self.f4]
 	
 class Map(object):
@@ -45,53 +45,53 @@ class Map(object):
 		self.c2 = MapSquare("c2", [466, 275])
 		self.c3 = MapSquare("c3", [520, 275])
 		self.c4 = MapSquare("c4", [575, 275])
-		self.c5 = MapSquare("c5", [629, 275])
+		self.c5 = MapSquare("c5", [630, 275])
 		
 		self.d1 = MapSquare("d1", [411, 331])
 		self.d2 = MapSquare("d2", [466, 331])
 		self.d3 = MapSquare("d3", [520, 331])
 		self.d4 = MapSquare("d4", [575, 331])
-		self.d5 = MapSquare("d5", [629, 331])
+		self.d5 = MapSquare("d5", [630, 331])
 		
 		self.e1 = MapSquare("e1", [411, 387])
 		self.e2 = MapSquare("e2", [466, 387])
 		self.e3 = MapSquare("e3", [520, 387])
 		self.e4 = MapSquare("e4", [575, 387])
-		self.e5 = MapSquare("e5", [629, 387])
+		self.e5 = MapSquare("e5", [630, 387])
 		
 		self.squares = [self.c1, self.c2, self.c3, self.c4, self.c5, self.d1, self.d2, self.d3, self.d4, self.d5, self.e1, self.e2, self.e3, self.e4, self.e5]
 		
 class HouseMap(object):
 	def __init__(self):
-		self.b1 = MapSquare("b1", [411, 219])
-		self.b2 = MapSquare("b2", [466, 219])
-		self.b3 = MapSquare("b3", [520, 219])
-		self.b4 = MapSquare("b4", [575, 219])
-		self.b5 = MapSquare("b5", [629, 219])
+		self.b1 = MapSquare("b1", [411, 220])
+		self.b2 = MapSquare("b2", [466, 220])
+		self.b3 = MapSquare("b3", [520, 220])
+		self.b4 = MapSquare("b4", [575, 220])
+		self.b5 = MapSquare("b5", [630, 220])
 		
 		self.c1 = MapSquare("c1", [411, 275])
 		self.c2 = MapSquare("c2", [466, 275])
 		self.c3 = MapSquare("c3", [520, 275])
 		self.c4 = MapSquare("c4", [575, 275])
-		self.c5 = MapSquare("c5", [629, 275])
+		self.c5 = MapSquare("c5", [630, 275])
 		
 		self.d1 = MapSquare("d1", [411, 331])
 		self.d2 = MapSquare("d2", [466, 331])
 		self.d3 = MapSquare("d3", [520, 331])
 		self.d4 = MapSquare("d4", [575, 331])
-		self.d5 = MapSquare("d5", [629, 331])
+		self.d5 = MapSquare("d5", [630, 331])
 		
 		self.e1 = MapSquare("e1", [411, 387])
 		self.e2 = MapSquare("e2", [466, 387])
 		self.e3 = MapSquare("e3", [520, 387])
 		self.e4 = MapSquare("e4", [575, 387])
-		self.e5 = MapSquare("e5", [629, 387])
+		self.e5 = MapSquare("e5", [630, 387])
 		
-		self.f1 = MapSquare("f1", [411, 443])
-		self.f2 = MapSquare("f2", [466, 443])
-		self.f3 = MapSquare("f3", [520, 443])
-		self.f4 = MapSquare("f4", [575, 443])
-		self.f5 = MapSquare("f5", [629, 443])
+		self.f1 = MapSquare("f1", [411, 442])
+		self.f2 = MapSquare("f2", [466, 442])
+		self.f3 = MapSquare("f3", [520, 442])
+		self.f4 = MapSquare("f4", [575, 442])
+		self.f5 = MapSquare("f5", [630, 442])
 		
 		self.squares = [self.b1, self.b2, self.b3, self.b4, self.b5, self.c1, self.c2, self.c3, self.c4, self.c5, self.d1, self.d2, self.d3, self.d4, self.d5, self.e1, self.e2, self.e3, self.e4, self.e5, self.f1, self.f2, self.f3, self.f4, self.f5]
 
@@ -188,7 +188,7 @@ def main():
 			rampFound = 0
 
 			for square in houseMap.squares:
-				region = im.crop((square.coordinates[0], square.coordinates[1], square.coordinates[0]+54, square.coordinates[1]+56))
+				region = im.crop((square.coordinates[0], square.coordinates[1], square.coordinates[0]+50, square.coordinates[1]+50))
 				colors = region.getcolors(maxcolors=1000)
 				
 				for color in colors:
