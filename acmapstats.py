@@ -160,30 +160,58 @@ def do_work(file, shopImg, dumpImg, postImg, tailorImg, policeImg, fountainImg, 
 			
 		c1 = False
 		c5 = False
+		col1 = False
+		col5 = False
 		belowShop = False
-			
+		ramp = ["z9","z9","z9","z9"]
+		rampFound = 0
+
 		for square in houseMap.squares:
-			region = im.crop((square.coordinates[0], square.coordinates[1], square.coordinates[0]+54, square.coordinates[1]+56))
+			region = im.crop((square.coordinates[0], square.coordinates[1], square.coordinates[0]+50, square.coordinates[1]+50))
 			colors = region.getcolors(maxcolors=1000)
 			
 			for color in colors:
 				#blue house = (90, 90, 225, 255)	purple house = (145, 70, 205, 255)	yellow house = (170, 115, 20, 255)
 				if color[1] == (90, 90, 225, 255) or color[1] == (145, 70, 205, 255) or color[1] == (170, 115, 20, 255):
-						if "e" in square.name or "f" in square.name:
-							housesOkay = False
-						elif square.name == "d1" or square.name == "d5":
-							housesOkay = False
-						elif square.name == "c1":
-							c1 = True
-						elif square.name == "c5":
-							c5 = True
-						elif (shop.name == "a2" and square.name == "b2") or (shop.name == "a4" and square.name == "b4"):
-							belowShop = True
+					if "e" in square.name or "f" in square.name:
+						housesOkay = False
+					elif square.name == "d1" or square.name == "d5":
+						housesOkay = False
+					elif "1" in square.name:
+						col1 = True
+					elif "5" in square.name:
+						col5 = True
+					if square.name == "c1":
+						c1 = True
+					elif square.name == "c5":
+						c5 = True
+					elif (shop.name == "a2" and square.name == "b2") or (shop.name == "a4" and square.name == "b4"):
+						belowShop = True
+					if (square.name == "c1" or square.name == "d1") and fountain.name == "d5":
+						housesOkay = False
+					elif (square.name == "c5" or square.name == "d5") and fountain.name == "d1":
+						housesOkay = False
+				#ramp
+				if color[1] == (66, 189, 66, 255):
+					ramp[rampFound] = square.name
+					rampFound += 1
+
+
 		if c1 and c5:
 			housesOkay = False
 		elif belowShop == False:
 			housesOkay = False
-			
+		elif col1 and col5 and "e" in fountain.name:
+			housesOkay = False
+
+		OK = False
+		if housesOkay and ("e" in fountain.name) or ("d" in fountain.name):
+			for i in range (0, 3):
+				if ramp[i][1:2] == chr(ord(fountain.name[1:2])) or (abs(ord(ramp[i][1:2]) - ord(fountain.name[1:2])) == 1 and ramp[i][0:1] !=  fountain.name[0:1]):
+					OK = True
+			if not OK:
+				housesOkay = False
+
 		if (housesOkay and ((shop.name == "a2" and post.name == "a4") or (shop.name == "a4" and post.name == "a2")) and not (fountain.name == "e1" or fountain.name == "e5" or (layers == 3 and "e" in fountain.name))):
 			if not os.path.exists(directory+"maybe/"):
 				os.makedirs(directory+"maybe/")
