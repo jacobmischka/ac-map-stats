@@ -147,6 +147,7 @@ def main():
 			if colors is None or colors[0][1] != (255, 255, 85, 255): #make sure it's a screenshot of the map
 				print(str(file) + "No map found.")
 				continue
+			layers = 1
 			shop = 0
 			post = 0
 			fountain = 0
