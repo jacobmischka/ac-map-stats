@@ -145,7 +145,7 @@ def main():
 			region = im.crop((330, 140, 331, 141))
 			colors = region.getcolors(1)
 			if colors is None or colors[0][1] != (255, 255, 85, 255): #make sure it's a screenshot of the map
-				print(str(file))
+				print(str(file) + "No map found.")
 				continue
 			shop = 0
 			post = 0
@@ -170,7 +170,7 @@ def main():
 				elif building.name == "fountain":
 					fountain = bestmatch
 				if  bestmatch.name == "c2" or bestmatch.name == "c3" or bestmatch.name == "c4":
-					print(str(file))
+					print(str(file + " " + building.name + " " + bestmatch.name))
 			
 			for square in cliffSquares:
 				region = im.crop((square.coordinates[0], square.coordinates[1], square.coordinates[0]+12, square.coordinates[1]+16))
