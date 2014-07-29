@@ -142,19 +142,11 @@ def main():
 			if fileCount <= skip:
 				continue
 			im = Image.open(directory+file)
-			region = im.crop((300, 120, 335, 125))
-			colors = region.getcolors()
-			if colors is None:
+			region = im.crop((330, 140, 331, 141))
+			colors = region.getcolors(1)
+			if colors is None or colors[0][1] != (255, 255, 85, 255): #make sure it's a screenshot of the map
 				print(str(file))
 				continue
-			isMap = False
-			for color in colors:
-				if color[1] == (255, 255, 85, 255): #make sure it's a screenshot of the map
-					isMap == True
-			if not isMap:
-				print(str(file))
-				continue
-			layers = 1
 			shop = 0
 			post = 0
 			fountain = 0
