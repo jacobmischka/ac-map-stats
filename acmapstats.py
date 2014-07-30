@@ -154,12 +154,30 @@ def main():
 			fileCount += 1
 			if fileCount <= skip:
 				continue
+			yOffset = 0
 			im = Image.open(directory+file)
 			region = im.crop((330, 140, 331, 141))
 			colors = region.getcolors(1)
 			if colors is None or colors[0][1] != (255, 255, 85, 255): #make sure it's a screenshot of the map
-				print(str(file) + "No map found.")
+				print(str(file) + " No map found.")
 				continue
+			
+			#try to look to see where the map is in case it's higher or lower than expected
+			region = im.crop((400, 146, 401, 147))
+			colors = region.getcolors(1)
+			if colors[0][1] !=	(187, 115, 60, 255) and colors[0][1] != (186, 114, 60, 255) and colors[0][1] != (202, 123, 60, 255):
+				region = im.crop((400, 144, 401, 145))
+				colors = region.getcolors(1)
+				if colors[0][1] ==  (187, 115, 60, 255) or colors[0][1] == (186, 114, 60, 255) or colors[0][1] == (202, 123, 60, 255):
+					yOffset = -2
+				else:
+					for y in range(0, 256):
+						region = im.crop((400, y, 401, y+1))
+						colors = region.getcolors(1)
+						if colors[0][1] == (187, 115, 60, 255) or colors[0][1] == (186, 114, 60, 255) or colors[0][1] == (202, 123, 60, 255):
+							yOffset = y-146
+							break
+				
 			layers = 1
 			shop = 0
 			post = 0
@@ -169,7 +187,7 @@ def main():
 				lowestdiff = 100
 				bestmatch = 0
 				for mapsquare in building.acmap.squares:
-					region = im.crop((mapsquare.coordinates[0], mapsquare.coordinates[1], mapsquare.coordinates[0]+48, mapsquare.coordinates[1]+48))
+					region = im.crop((mapsquare.coordinates[0], mapsquare.coordinates[1]+yOffset, mapsquare.coordinates[0]+48, mapsquare.coordinates[1]+48+yOffset))
 					diff = rms(region, building.img)
 					#print(str(file)+" "+building.name+" "+mapsquare.name+" "+str(diff))
 					if diff < lowestdiff:
@@ -186,10 +204,10 @@ def main():
 					fountain = bestmatch
 					
 				if  bestmatch.name == "c2" or bestmatch.name == "c3" or bestmatch.name == "c4":
-					print(str(file + " " + building.name + " " + bestmatch.name))
+					print(str(file) + " " + building.name + " " + bestmatch.name)
 			
 			for square in cliffSquares:
-				region = im.crop((square.coordinates[0], square.coordinates[1], square.coordinates[0]+12, square.coordinates[1]+16))
+				region = im.crop((square.coordinates[0], square.coordinates[1]+yOffset, square.coordinates[0]+12, square.coordinates[1]+16+yOffset))
 				diff = rms(region, cliff)
 				if diff < 20:
 					layers += 1
@@ -212,7 +230,7 @@ def main():
 			rampFound = 0
 
 			for square in houseMap.squares:
-				region = im.crop((square.coordinates[0], square.coordinates[1], square.coordinates[0]+50, square.coordinates[1]+50))
+				region = im.crop((square.coordinates[0], square.coordinates[1]+yOffset, square.coordinates[0]+50, square.coordinates[1]+50+yOffset))
 				colors = region.getcolors(maxcolors=1000)
 				
 				for color in colors:
