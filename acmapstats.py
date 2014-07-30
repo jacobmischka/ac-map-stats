@@ -207,7 +207,7 @@ def main():
 					print(str(file) + " " + building.name + " " + bestmatch.name)
 			
 			for square in cliffSquares:
-				region = im.crop((square.coordinates[0], square.coordinates[1]+yOffset, square.coordinates[0]+12, square.coordinates[1]+16+yOffset))
+				region = im.crop((square.coordinates[0], square.coordinates[1]+yOffset, square.coordinates[0]+8, square.coordinates[1]+16+yOffset))
 				diff = rms(region, cliff)
 				if diff < 20:
 					layers += 1
