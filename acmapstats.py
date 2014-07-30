@@ -7,6 +7,19 @@ def sort_nicely( l ):
 	alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ]
 	l.sort( key=alphanum_key )
 
+yA = 165
+yB = 220
+yC = 275
+yD = 331
+yE = 387
+yF = 442
+
+x1 = 411
+x2 = 466
+x3 = 521
+x4 = 575
+x5 = 630
+
 
 class MapSquare(object):
 	
@@ -25,73 +38,73 @@ class Building(object):
 		
 class AMap(object):
 	def __init__(self):
-		self.a1 = MapSquare("a1", [409,163])
-		self.a2 = MapSquare("a2", [464,163])
-		self.a4 = MapSquare("a4", [573,163])
-		self.a5 = MapSquare("a5", [628,163])
+		self.a1 = MapSquare("a1", [x1, yA])
+		self.a2 = MapSquare("a2", [x2, yA])
+		self.a4 = MapSquare("a4", [x4, yA])
+		self.a5 = MapSquare("a5", [x5, yA])
 		self.squares = [self.a1, self.a2, self.a4, self.a5]
 
 class FMap(object):
 	def __init__(self):
-		self.f1 = MapSquare("f1", [411, 442])
-		self.f2 = MapSquare("f2", [466, 442])
-		self.f3 = MapSquare("f3", [520, 442])
-		self.f4 = MapSquare("f4", [575, 442])
+		self.f1 = MapSquare("f1", [x1, yF])
+		self.f2 = MapSquare("f2", [x2, yF])
+		self.f3 = MapSquare("f3", [x3, yF])
+		self.f4 = MapSquare("f4", [x4, yF])
 		self.squares = [self.f1, self.f2, self.f3, self.f4]
 	
 class Map(object):
 	def __init__(self):
-		self.c1 = MapSquare("c1", [411, 275])
-		self.c2 = MapSquare("c2", [466, 275])
-		self.c3 = MapSquare("c3", [520, 275])
-		self.c4 = MapSquare("c4", [575, 275])
-		self.c5 = MapSquare("c5", [630, 275])
+		self.c1 = MapSquare("c1", [x1, yC])
+		self.c2 = MapSquare("c2", [x2, yC])
+		self.c3 = MapSquare("c3", [x3, yC])
+		self.c4 = MapSquare("c4", [x4, yC])
+		self.c5 = MapSquare("c5", [x5, yC])
 		
-		self.d1 = MapSquare("d1", [411, 331])
-		self.d2 = MapSquare("d2", [466, 331])
-		self.d3 = MapSquare("d3", [520, 331])
-		self.d4 = MapSquare("d4", [575, 331])
-		self.d5 = MapSquare("d5", [630, 331])
+		self.d1 = MapSquare("d1", [x1, yD])
+		self.d2 = MapSquare("d2", [x2, yD])
+		self.d3 = MapSquare("d3", [x3, yD])
+		self.d4 = MapSquare("d4", [x4, yD])
+		self.d5 = MapSquare("d5", [x5, yD])
 		
-		self.e1 = MapSquare("e1", [411, 387])
-		self.e2 = MapSquare("e2", [466, 387])
-		self.e3 = MapSquare("e3", [520, 387])
-		self.e4 = MapSquare("e4", [575, 387])
-		self.e5 = MapSquare("e5", [630, 387])
+		self.e1 = MapSquare("e1", [x1, yE])
+		self.e2 = MapSquare("e2", [x2, yE])
+		self.e3 = MapSquare("e3", [x3, yE])
+		self.e4 = MapSquare("e4", [x4, yE])
+		self.e5 = MapSquare("e5", [x5, yE])
 		
 		self.squares = [self.c1, self.c2, self.c3, self.c4, self.c5, self.d1, self.d2, self.d3, self.d4, self.d5, self.e1, self.e2, self.e3, self.e4, self.e5]
 		
 class HouseMap(object):
 	def __init__(self):
-		self.b1 = MapSquare("b1", [411, 220])
-		self.b2 = MapSquare("b2", [466, 220])
-		self.b3 = MapSquare("b3", [520, 220])
-		self.b4 = MapSquare("b4", [575, 220])
-		self.b5 = MapSquare("b5", [630, 220])
+		self.b1 = MapSquare("b1", [x1, yB])
+		self.b2 = MapSquare("b2", [x2, yB])
+		self.b3 = MapSquare("b3", [x3, yB])
+		self.b4 = MapSquare("b4", [x4, yB])
+		self.b5 = MapSquare("b5", [x5, yB])
 		
-		self.c1 = MapSquare("c1", [411, 275])
-		self.c2 = MapSquare("c2", [466, 275])
-		self.c3 = MapSquare("c3", [520, 275])
-		self.c4 = MapSquare("c4", [575, 275])
-		self.c5 = MapSquare("c5", [630, 275])
+		self.c1 = MapSquare("c1", [x1, yC])
+		self.c2 = MapSquare("c2", [x2, yC])
+		self.c3 = MapSquare("c3", [x3, yC])
+		self.c4 = MapSquare("c4", [x4, yC])
+		self.c5 = MapSquare("c5", [x5, yC])
 		
-		self.d1 = MapSquare("d1", [411, 331])
-		self.d2 = MapSquare("d2", [466, 331])
-		self.d3 = MapSquare("d3", [520, 331])
-		self.d4 = MapSquare("d4", [575, 331])
-		self.d5 = MapSquare("d5", [630, 331])
+		self.d1 = MapSquare("d1", [x1, yD])
+		self.d2 = MapSquare("d2", [x2, yD])
+		self.d3 = MapSquare("d3", [x3, yD])
+		self.d4 = MapSquare("d4", [x4, yD])
+		self.d5 = MapSquare("d5", [x5, yD])
 		
-		self.e1 = MapSquare("e1", [411, 387])
-		self.e2 = MapSquare("e2", [466, 387])
-		self.e3 = MapSquare("e3", [520, 387])
-		self.e4 = MapSquare("e4", [575, 387])
-		self.e5 = MapSquare("e5", [630, 387])
+		self.e1 = MapSquare("e1", [x1, yE])
+		self.e2 = MapSquare("e2", [x2, yE])
+		self.e3 = MapSquare("e3", [x3, yE])
+		self.e4 = MapSquare("e4", [x4, yE])
+		self.e5 = MapSquare("e5", [x5, yE])
 		
-		self.f1 = MapSquare("f1", [411, 442])
-		self.f2 = MapSquare("f2", [466, 442])
-		self.f3 = MapSquare("f3", [520, 442])
-		self.f4 = MapSquare("f4", [575, 442])
-		self.f5 = MapSquare("f5", [630, 442])
+		self.f1 = MapSquare("f1", [x1, yF])
+		self.f2 = MapSquare("f2", [x2, yF])
+		self.f3 = MapSquare("f3", [x3, yF])
+		self.f4 = MapSquare("f4", [x4, yF])
+		self.f5 = MapSquare("f5", [x5, yF])
 		
 		self.squares = [self.b1, self.b2, self.b3, self.b4, self.b5, self.c1, self.c2, self.c3, self.c4, self.c5, self.d1, self.d2, self.d3, self.d4, self.d5, self.e1, self.e2, self.e3, self.e4, self.e5, self.f1, self.f2, self.f3, self.f4, self.f5]
 
@@ -109,7 +122,7 @@ museum = Building("museum", Image.open("museum.png"), Map())
 buildings = [shop, dump, postoffice, tailor, policestation, fountain, museum]
 
 cliff = Image.open("cliff.png")
-cliffSquares = [MapSquare("b1", [409, 249]), MapSquare("c1", [409, 305]), MapSquare("d1", [409, 361]), MapSquare("e1", [409, 417])]
+cliffSquares = [MapSquare("b1", [x1, 249]), MapSquare("c1", [x1, 305]), MapSquare("d1", [x1, 361]), MapSquare("e1", [x1, 417])]
 
 houseMap = HouseMap()
 
@@ -156,8 +169,9 @@ def main():
 				lowestdiff = 100
 				bestmatch = 0
 				for mapsquare in building.acmap.squares:
-					region = im.crop((mapsquare.coordinates[0], mapsquare.coordinates[1], mapsquare.coordinates[0]+50, mapsquare.coordinates[1]+50))
+					region = im.crop((mapsquare.coordinates[0], mapsquare.coordinates[1], mapsquare.coordinates[0]+48, mapsquare.coordinates[1]+48))
 					diff = rms(region, building.img)
+					#print(str(file)+" "+building.name+" "+mapsquare.name+" "+str(diff))
 					if diff < lowestdiff:
 						lowestdiff = diff
 						bestmatch = mapsquare
@@ -170,6 +184,7 @@ def main():
 					post = bestmatch
 				elif building.name == "fountain":
 					fountain = bestmatch
+					
 				if  bestmatch.name == "c2" or bestmatch.name == "c3" or bestmatch.name == "c4":
 					print(str(file + " " + building.name + " " + bestmatch.name))
 			
