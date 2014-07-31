@@ -222,8 +222,8 @@ def main():
 			d3 = False
 			c3ledge = False
 			col1 = False
-			col2 = False
-			col4 = False
+			col2 = 0
+			col4 = 0
 			col5 = False
 			belowShop = False
 			ramp = ["z9","z9","z9","z9"]
@@ -245,9 +245,9 @@ def main():
 							if fountain.name == "d5" or fountain.name == "e4":
 								housesOkay = False
 						elif "2" in square.name:
-							col2 = True
+							col2 += 1
 						elif "4" in square.name:
-							col4 = True
+							col4 += 1
 						elif "5" in square.name:
 							col5 = True
 							if fountain.name == "d1" or fountain.name == "e2":
@@ -281,6 +281,7 @@ def main():
 
 			#check for ramps to get to fountain
 			OK = False
+			OK2 = False
 			if housesOkay:
 				for i in range (0, 4):
 					if (col1 and col5) or ("e" in fountain.name and (col1 or col5)):
@@ -289,7 +290,16 @@ def main():
 					else:
 						if (abs(ord(ramp[i][1:2]) - ord(fountain.name[1:2])) <= 1 and ord(ramp[i][0:1]) <  ord(fountain.name[0:1])):
 							OK = True
-				if not OK:
+
+					if col2 > 1 and col5 and ("d" in fountain.name or fountain.name == "c5"):
+						if (ord(ramp[i][1:2]) == ord(fountain.name[1:2])) and ord(ramp[i][0:1]) <  ord(fountain.name[0:1]):
+							OK2 = True
+					elif col4 > 1 and col1 and ("d" in fountain.name or fountain.name == "c1"):
+						if (ord(ramp[i][1:2]) == ord(fountain.name[1:2])) and ord(ramp[i][0:1]) <  ord(fountain.name[0:1]):
+							OK2 = True
+					else:
+						OK2 = True
+				if not (OK and OK2):
 					housesOkay = False
 
 			#check for ramps to get to houses in d3. d2/d4 houses will always hit this condition.
