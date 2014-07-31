@@ -219,12 +219,17 @@ def main():
 				
 			c1 = False
 			c5 = False
+			d1 = False
 			d3 = False
+			d5 = False
 			c3ledge = False
 			col1 = False
 			col2 = 0
 			col4 = 0
 			col5 = False
+			e2 = False
+			e3 = False
+			e4 = False
 			belowShop = False
 			ramp = ["z9","z9","z9","z9"]
 			rampFound = 0
@@ -236,11 +241,21 @@ def main():
 				for color in colors:
 					#blue house = (90, 90, 225, 255)	purple house = (145, 70, 205, 255)	yellow house = (170, 115, 20, 255)
 					if color[1] == (90, 90, 225, 255) or color[1] == (145, 70, 205, 255) or color[1] == (170, 115, 20, 255):
-						if "e" in square.name or "f" in square.name:
+						if "f" in square.name:
 							housesOkay = False
-						elif square.name == "d1" or square.name == "d5":
+						if square.name == "e2":
+							e2 = True
+						elif square.name == "e4":
+							e4 = True
+						elif square.name == "e3":
+							e3 = True
+						elif "e" in square.name:
 							housesOkay = False
-						elif "1" in square.name:
+						elif square.name == "d1":
+							d1 = True
+						elif square.name == "d5":
+							d5 = True
+						if "1" in square.name:
 							col1 = True
 							if fountain.name == "d5" or fountain.name == "e4":
 								housesOkay = False
@@ -278,13 +293,27 @@ def main():
 				housesOkay = False
 			elif ("e" in fountain.name and ((col4 and col1) or (col5 and col2))):
 				housesOkay = False
+			elif d1 and col5:
+				housesOkay = False
+			elif d5 and col1:
+				housesOkay = False
+			elif (e2 or e3 or e4) and (col1 or col5):
+				housesOkay = False
+			elif e2 and (shop.name != "a2" or col4):
+				housesOkay = False
+			elif e4 and (shop.name != "a4" or col2):
+				housesOkay = False
+			elif fountain.name == "d1" and shop.name == "a4":
+				housesOkay = False
+			elif fountain.name == "d5" and shop.name == "a2":
+				housesOkay = False
 
 			#check for ramps to get to fountain
 			OK = False
 			OK2 = False
 			if housesOkay:
 				for i in range (0, 4):
-					if (col1 and col5) or ("e" in fountain.name and (col1 or col5)):
+					if (col1 and col5) or ("e" in fountain.name and (col1 or col5)) or (fountain.name == "e2" and shop.name == "a4") or (fountain.name == "e4" and shop.name == "a2"):
 						if (ord(ramp[i][1:2]) == ord(fountain.name[1:2])) and ord(ramp[i][0:1]) <  ord(fountain.name[0:1]):
 							OK = True
 					else:
