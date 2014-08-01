@@ -243,7 +243,7 @@ def main():
 					if color[1] == (90, 90, 225, 255) or color[1] == (145, 70, 205, 255) or color[1] == (170, 115, 20, 255):
 						if "f" in square.name:
 							housesOkay = False
-						if square.name == "e2":
+						elif square.name == "e2":
 							e2 = True
 						elif square.name == "e4":
 							e4 = True
@@ -255,6 +255,7 @@ def main():
 							d1 = True
 						elif square.name == "d5":
 							d5 = True
+
 						if "1" in square.name:
 							col1 = True
 							if fountain.name == "d5" or fountain.name == "e4":
@@ -303,9 +304,13 @@ def main():
 				housesOkay = False
 			elif e4 and (shop.name != "a4" or col2):
 				housesOkay = False
-			elif fountain.name == "d1" and shop.name == "a4":
+			elif fountain.name == "d1" and (col4 or shop.name == "a4"):
 				housesOkay = False
-			elif fountain.name == "d5" and shop.name == "a2":
+			if fountain.name == "d5" and (col2 or shop.name == "a2"):
+				housesOkay = False
+			elif fountain.name == "e2" and (col4 or shop.name == "a4"):
+				housesOkay = False
+			elif fountain.name == "e4" and (col2 or shop.name == "a2"):
 				housesOkay = False
 
 			#check for ramps to get to fountain
@@ -313,7 +318,7 @@ def main():
 			OK2 = False
 			if housesOkay:
 				for i in range (0, 4):
-					if (col1 and col5) or ("e" in fountain.name and (col1 or col5)) or (fountain.name == "e2" and shop.name == "a4") or (fountain.name == "e4" and shop.name == "a2"):
+					if (col1 and col5) or ("e" in fountain.name and (col1 or col5)) or (fountain.name == "d4" and (shop.name == "a2" or col2)) or (fountain.name == "d2" and (shop.name == "a4" or col4)):
 						if (ord(ramp[i][1:2]) == ord(fountain.name[1:2])) and ord(ramp[i][0:1]) <  ord(fountain.name[0:1]):
 							OK = True
 					else:
