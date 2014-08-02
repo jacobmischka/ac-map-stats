@@ -290,13 +290,13 @@ def main():
 				housesOkay = False
 			elif belowShop == False:
 				housesOkay = False
-			elif col1 and col5 and "e" in fountain.name:
+			elif col1 and col5:
 				housesOkay = False
 			elif ("e" in fountain.name and ((col4 and col1) or (col5 and col2))):
 				housesOkay = False
-			elif d1 and col5:
+			elif d1 and (col5 or col4 or shop.name == "a4"):
 				housesOkay = False
-			elif d5 and col1:
+			elif d5 and (col1 or col2 or shop.name == "a2"):
 				housesOkay = False
 			elif (e2 or e3 or e4) and (col1 or col5):
 				housesOkay = False
@@ -318,7 +318,7 @@ def main():
 			OK2 = False
 			if housesOkay:
 				for i in range (0, 4):
-					if (col1 and col5) or ("e" in fountain.name and (col1 or col5)) or (fountain.name == "d4" and (shop.name == "a2" or col2)) or (fountain.name == "d2" and (shop.name == "a4" or col4)):
+					if (col1 or col5) or ("e" in fountain.name and (col1 or col5)) or (fountain.name == "d4" and (shop.name == "a2" or col2)) or (fountain.name == "d2" and (shop.name == "a4" or col4)):
 						if (ord(ramp[i][1:2]) == ord(fountain.name[1:2])) and ord(ramp[i][0:1]) <  ord(fountain.name[0:1]):
 							OK = True
 					else:
