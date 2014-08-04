@@ -312,6 +312,10 @@ def main():
 				housesOkay = False
 			elif fountain.name == "e4" and (col2 or shop.name == "a2"):
 				housesOkay = False
+			elif shop.name == "a2" and col5 and fountain.name != "c5":
+				housesOkay = False
+			elif shop.name == "a4" and col1 and fountain.name != "c1":
+				housesOkay = False
 
 			#check for ramps to get to fountain
 			OK = False
