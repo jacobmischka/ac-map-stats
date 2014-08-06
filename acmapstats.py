@@ -159,8 +159,11 @@ def main():
 			region = im.crop((330, 140, 331, 141))
 			colors = region.getcolors(1)
 			if colors is None or colors[0][1] != (255, 255, 85, 255): #make sure it's a screenshot of the map
-				print(str(file) + " No map found.")
-				continue
+				region = im.crop((330, 175, 331, 176))
+				colors = region.getcolors(1)
+				if colors is None or colors[0][1] != (255, 255, 85, 255): #check another spot in case the map is offset and it happens to hit one of the lines.
+					print(str(file) + " No map found.")
+					continue
 			
 			#try to look to see where the map is in case it's higher or lower than expected
 			region = im.crop((400, 146, 401, 147))
@@ -174,7 +177,7 @@ def main():
 					for y in range(0, 256):
 						region = im.crop((400, y, 401, y+1))
 						colors = region.getcolors(1)
-						if colors[0][1] == (187, 115, 60, 255) or colors[0][1] == (186, 114, 60, 255) or colors[0][1] == (202, 123, 60, 255):
+						if colors[0][1] == (187, 115, 60, 255) or colors[0][1] == (186, 114, 60, 255) or colors[0][1] == (202, 123, 60, 255) or colors[0][1] == (194, 136, 64, 255):
 							yOffset = y-146
 							break
 				
