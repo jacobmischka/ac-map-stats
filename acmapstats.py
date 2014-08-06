@@ -220,22 +220,11 @@ def main():
 			elif layers == 3:
 				threeLayers += 1
 				
-			c1 = False
-			c5 = False
-			d1 = False
-			d3 = False
-			d5 = False
 			c3ledge = False
-			col1 = False
-			col2 = 0
-			col4 = 0
-			col5 = False
-			e2 = False
-			e3 = False
-			e4 = False
-			belowShop = False
-			ramp = ["z9","z9","z9","z9"]
-			rampFound = 0
+			houses = []
+			columns = []
+			rows = []
+			ramps = []
 
 			for square in houseMap.squares:
 				region = im.crop((square.coordinates[0], square.coordinates[1]+yOffset, square.coordinates[0]+50, square.coordinates[1]+50+yOffset))
@@ -244,103 +233,80 @@ def main():
 				for color in colors:
 					#blue house = (90, 90, 225, 255)	purple house = (145, 70, 205, 255)	yellow house = (170, 115, 20, 255)
 					if color[1] == (90, 90, 225, 255) or color[1] == (145, 70, 205, 255) or color[1] == (170, 115, 20, 255):
-						if "f" in square.name:
-							housesOkay = False
-						elif square.name == "e2":
-							e2 = True
-						elif square.name == "e4":
-							e4 = True
-						elif square.name == "e3":
-							e3 = True
-						elif "e" in square.name:
-							housesOkay = False
-						elif square.name == "d1":
-							d1 = True
-						elif square.name == "d5":
-							d5 = True
+						houses.append(square.name)
+						columns.append(square.name[1:2])
+						rows.append(square.name[0:1])
 
-						if "1" in square.name:
-							col1 = True
-							if fountain.name == "d5" or fountain.name == "e4":
-								housesOkay = False
-						elif "2" in square.name:
-							col2 += 1
-						elif "4" in square.name:
-							col4 += 1
-						elif "5" in square.name:
-							col5 = True
-							if fountain.name == "d1" or fountain.name == "e2":
-								housesOkay = False
-						if square.name == "c1":
-							c1 = True
-						elif square.name == "c5":
-							c5 = True
-						elif square.name == "d3":
-							d3 = True
-						elif (shop.name == "a2" and square.name == "b2") or (shop.name == "a4" and square.name == "b4"):
-							belowShop = True
+
 					#ramp
 					if color[1] == (66, 189, 66, 255):
-						ramp[rampFound] = square.name
-						rampFound += 1
+						ramps.append(square.name)
 					# ledge
 					if color[1] == (146, 146, 146, 255) or color[1] == (148, 148, 148, 255):
 						if square.name == "c3":
 							c3ledge = True
 
 
-			if c1 and c5:
+			if "f" in rows:
 				housesOkay = False
-			elif belowShop == False:
+			elif "e1" in houses or "e5" in houses:
 				housesOkay = False
-			elif col1 and col5:
+			elif "1" in rows and (fountain.name == "d5" or fountain.name == "e4"):
 				housesOkay = False
-			elif ("e" in fountain.name and ((col4 and col1) or (col5 and col2))):
+			elif "5" in rows and (fountain.name == "d1" or fountain.name == "e2"):
 				housesOkay = False
-			elif d1 and (col5 or col4 or shop.name == "a4"):
+			elif "c1" in houses and "c5" in houses:
 				housesOkay = False
-			elif d5 and (col1 or col2 or shop.name == "a2"):
+			elif (shop.name == "a2" and "b2" not in houses) or (shop.name == "a4" and "b4" not in houses):
 				housesOkay = False
-			elif (e2 or e3 or e4) and (col1 or col5):
+			elif "1" in columns and "5" in columns:
 				housesOkay = False
-			elif e2 and (shop.name != "a2" or col4):
+			elif ("e" in fountain.name and (("4" in columns and "1" in columns) or ("5" in columns and "2" in columns))):
 				housesOkay = False
-			elif e4 and (shop.name != "a4" or col2):
+			elif "d1" in houses and ("5" in columns or "4" in columns or shop.name == "a4"):
 				housesOkay = False
-			elif fountain.name == "d1" and (col4 or shop.name == "a4"):
+			elif "d5" in houses and ("1" in columns or "2" in columns or shop.name == "a2"):
 				housesOkay = False
-			elif fountain.name == "d5" and (col2 or shop.name == "a2"):
+			elif ("e" in rows and ("1" in columns or "5" in columns)):
 				housesOkay = False
-			elif fountain.name == "e2" and (col4 or shop.name == "a4"):
+			elif "e2" in houses and (shop.name != "a2" or "4" in columns):
 				housesOkay = False
-			elif fountain.name == "e4" and (col2 or shop.name == "a2"):
+			elif "e4" in houses and (shop.name != "a4" or "2" in columns):
 				housesOkay = False
-			elif shop.name == "a2" and col5 and fountain.name != "c5":
+			elif fountain.name == "d1" and ("4" in columns or shop.name == "a4"):
 				housesOkay = False
-			elif shop.name == "a4" and col1 and fountain.name != "c1":
+			elif fountain.name == "d5" and ("2" in columns or shop.name == "a2"):
 				housesOkay = False
-			elif (e2  or e3 or e4) and shop.name == "a2" and col4:
+			elif fountain.name == "e2" and ("4" in columns or shop.name == "a4"):
 				housesOkay = False
-			elif (e2  or e3 or e4) and shop.name == "a4" and col2:
+			elif fountain.name == "e4" and ("2" in columns or shop.name == "a2"):
+				housesOkay = False
+			elif shop.name == "a2" and "5" in columns and fountain.name != "c5":
+				housesOkay = False
+			elif shop.name == "a4" and "1" in columns and fountain.name != "c1":
+				housesOkay = False
+			elif ("e" in rows) and shop.name == "a2" and "4" in columns:
+				housesOkay = False
+			elif ("e" in rows) and shop.name == "a4" and "2" in columns:
 				housesOkay = False
 
 			#check for ramps to get to fountain
 			OK = False
 			OK2 = False
 			if housesOkay:
-				for i in range (0, 4):
-					if (col1 or col5) or ("e" in fountain.name and (col1 or col5)) or (fountain.name == "d4" and (shop.name == "a2" or col2)) or (fountain.name == "d2" and (shop.name == "a4" or col4)):
-						if (ord(ramp[i][1:2]) == ord(fountain.name[1:2])) and ord(ramp[i][0:1]) <  ord(fountain.name[0:1]):
+				for ramp in ramps:
+					if ("1" in columns or "5" in columns) or ("e" in fountain.name and ("1" in columns or "5" in columns)) or (fountain.name == "d4" and (shop.name == "a2" or "2" in columns)) or (fountain.name == "d2" and (shop.name == "a4" or "4" in columns)):
+						if (ord(ramp[1:2]) == ord(fountain.name[1:2])) and ord(ramp[0:1]) <  ord(fountain.name[0:1]):
 							OK = True
 					else:
-						if (abs(ord(ramp[i][1:2]) - ord(fountain.name[1:2])) <= 1 and ord(ramp[i][0:1]) <  ord(fountain.name[0:1])):
+						if (abs(ord(ramp[1:2]) - ord(fountain.name[1:2])) <= 1 and ord(ramp[0:1]) <  ord(fountain.name[0:1])):
 							OK = True
 
-					if col2 > 1 and col5 and ("d" in fountain.name or fountain.name == "c5"):
-						if (ord(ramp[i][1:2]) == ord(fountain.name[1:2])) and ord(ramp[i][0:1]) <  ord(fountain.name[0:1]):
+					if columns.count("2") > 1 and "5" in columns and ("d" in fountain.name or fountain.name == "c5"):
+						if (ord(ramp[1:2]) == ord(fountain.name[1:2])) and ord(ramp[0:1]) <  ord(fountain.name[0:1]):
 							OK2 = True
-					elif col4 > 1 and col1 and ("d" in fountain.name or fountain.name == "c1"):
-						if (ord(ramp[i][1:2]) == ord(fountain.name[1:2])) and ord(ramp[i][0:1]) <  ord(fountain.name[0:1]):
+					elif columns.count("4") > 1 and "1" in columns and ("d" in fountain.name or fountain.name == "c1"):
+						if (ord(ramp[1:2]) == ord(fountain.name[1:2])) and ord(ramp[0:1]) <  ord(fountain.name[0:1]):
 							OK2 = True
 					else:
 						OK2 = True
@@ -349,11 +315,11 @@ def main():
 
 			#check for ramps to get to houses in d3. d2/d4 houses will always hit this condition.
 			OK = False
-			if d3 and c3ledge:
-				for i in range (0, 4):
+			if "d3" in houses and c3ledge:
+				for ramp in ramps:
 					#if it's 3 layers then the d ramps are either below the house, or there's another cliff at c
 					#that's also in the way, so we need that anyway. If it's 2 layers then it will get us back up
-					if (ramp[i] == "c2" or ramp[i] == "c3" or ramp[i] == "c4") or (layers == 2 and (ramp[i] == "d2" or ramp[i] == "d3" or ramp[i] == "d4")):
+					if (ramp == "c2" or ramp == "c3" or ramp == "c4") or (layers == 2 and (ramp == "d2" or ramp == "d3" or ramp == "d4")):
 						OK = True
 				if not OK:
 					housesOkay = False
