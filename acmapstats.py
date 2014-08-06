@@ -237,7 +237,6 @@ def main():
 						columns.append(square.name[1:2])
 						rows.append(square.name[0:1])
 
-
 					#ramp
 					if color[1] == (66, 189, 66, 255):
 						ramps.append(square.name)
@@ -251,9 +250,9 @@ def main():
 				housesOkay = False
 			elif "e1" in houses or "e5" in houses:
 				housesOkay = False
-			elif "1" in rows and (fountain.name == "d5" or fountain.name == "e4"):
+			elif "1" in columns and (fountain.name == "d5" or fountain.name == "e4"):
 				housesOkay = False
-			elif "5" in rows and (fountain.name == "d1" or fountain.name == "e2"):
+			elif "5" in columns and (fountain.name == "d1" or fountain.name == "e2"):
 				housesOkay = False
 			elif "c1" in houses and "c5" in houses:
 				housesOkay = False
@@ -285,9 +284,9 @@ def main():
 				housesOkay = False
 			elif shop.name == "a4" and "1" in columns and fountain.name != "c1":
 				housesOkay = False
-			elif ("e" in rows) and shop.name == "a2" and "4" in columns:
+			elif ("e" in rows) and ((shop.name == "a2" and "4" in columns) or (shop.name == "a4" and "2" in columns)):
 				housesOkay = False
-			elif ("e" in rows) and shop.name == "a4" and "2" in columns:
+			elif ("d2" in houses and "5" in columns) or ("d4" in houses and "1" in columns):
 				housesOkay = False
 
 			#check for ramps to get to fountain
