@@ -226,6 +226,10 @@ def main():
 			rows = []
 			ramps = []
 
+			houses.append(fountain.name)
+			columns.append(fountain.name[1:2])
+			rows.append(fountain.name[0:1])
+
 			for square in houseMap.squares:
 				region = im.crop((square.coordinates[0], square.coordinates[1]+yOffset, square.coordinates[0]+50, square.coordinates[1]+50+yOffset))
 				colors = region.getcolors(maxcolors=1000)
@@ -248,45 +252,29 @@ def main():
 
 			if "f" in rows:
 				housesOkay = False
-			elif "e1" in houses or "e5" in houses:
-				housesOkay = False
-			elif "1" in columns and (fountain.name == "d5" or fountain.name == "e4"):
-				housesOkay = False
-			elif "5" in columns and (fountain.name == "d1" or fountain.name == "e2"):
-				housesOkay = False
-			elif "c1" in houses and "c5" in houses:
-				housesOkay = False
-			elif (shop.name == "a2" and "b2" not in houses) or (shop.name == "a4" and "b4" not in houses):
+			elif ("e" in rows and ("1" in columns or "5" in columns)):
 				housesOkay = False
 			elif "1" in columns and "5" in columns:
 				housesOkay = False
-			elif ("e" in fountain.name and (("4" in columns and "1" in columns) or ("5" in columns and "2" in columns))):
+			elif "e1" in houses or "e5" in houses or rows.count("e") > 1:
 				housesOkay = False
-			elif "d1" in houses and ("5" in columns or "4" in columns or shop.name == "a4"):
+			elif ("1" in columns or "5" in columns or "3" in columns) and ("e4" in houses and "e2" in houses):
 				housesOkay = False
-			elif "d5" in houses and ("1" in columns or "2" in columns or shop.name == "a2"):
+			elif ("d1" in houses or "e2" in houses) and ("4" in columns or shop.name == "a4"):
 				housesOkay = False
-			elif ("e" in rows and ("1" in columns or "5" in columns)):
+			elif ("d5" in houses or "e4" in houses) and ("2" in columns or shop.name == "a2"):
 				housesOkay = False
-			elif "e2" in houses and (shop.name != "a2" or "4" in columns):
+			elif ("d2" in houses and "5" in columns) or ("d4" in houses and "1" in columns):
 				housesOkay = False
-			elif "e4" in houses and (shop.name != "a4" or "2" in columns):
+			elif (shop.name == "a2" and "b2" not in houses) or (shop.name == "a4" and "b4" not in houses):
 				housesOkay = False
-			elif fountain.name == "d1" and ("4" in columns or shop.name == "a4"):
-				housesOkay = False
-			elif fountain.name == "d5" and ("2" in columns or shop.name == "a2"):
-				housesOkay = False
-			elif fountain.name == "e2" and ("4" in columns or shop.name == "a4"):
-				housesOkay = False
-			elif fountain.name == "e4" and ("2" in columns or shop.name == "a2"):
-				housesOkay = False
-			elif shop.name == "a2" and "5" in columns and fountain.name != "c5":
-				housesOkay = False
-			elif shop.name == "a4" and "1" in columns and fountain.name != "c1":
+			elif ("e" in rows and (("4" in columns and "1" in columns) or ("5" in columns and "2" in columns))):
 				housesOkay = False
 			elif ("e" in rows) and ((shop.name == "a2" and "4" in columns) or (shop.name == "a4" and "2" in columns)):
 				housesOkay = False
-			elif ("d2" in houses and "5" in columns) or ("d4" in houses and "1" in columns):
+			elif shop.name == "a2" and (columns.count("5") > 2 if "b5" in houses else (columns.count("5") > 1)) and fountain.name != "c5":
+				housesOkay = False
+			elif shop.name == "a4" and (columns.count("1") > 2 if "b1" in houses else (columns.count("1") > 1)) and fountain.name != "c1":
 				housesOkay = False
 
 			#check for ramps to get to fountain
@@ -323,7 +311,7 @@ def main():
 				if not OK:
 					housesOkay = False
 
-			if (housesOkay and ((shop.name == "a2" and post.name == "a4") or (shop.name == "a4" and post.name == "a2")) and not (fountain.name == "e1" or fountain.name == "e5" or (layers == 3 and "e" in fountain.name))):
+			if (housesOkay and ((shop.name == "a2" and post.name == "a4") or (shop.name == "a4" and post.name == "a2")) and not(layers == 3 and "e" in fountain.name)):
 				if not os.path.exists(directory+"maybe/"):
 					os.makedirs(directory+"maybe/")
 				shutil.copy(directory+file, directory+"maybe/"+file)
