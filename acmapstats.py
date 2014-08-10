@@ -284,7 +284,7 @@ def main():
 			OK2 = False
 			if housesOkay:
 				for ramp in ramps:
-					if ("1" not in fountain.name and "5" not in fountain.name) and (("1" in columns and "5" in columns) or ("e" in fountain.name)):
+					if ("1" not in fountain.name and "5" not in fountain.name) and (("1" in columns and "5" in columns) or ("e" in fountain.name) or (("d" in fountain.name or "3" in fountain.name) and (("2" in columns and "5" in columns) or ("1" in columns and "4" in columns)))):
 						if (ord(ramp[1:2]) == ord(fountain.name[1:2])) and ord(ramp[0:1]) <  ord(fountain.name[0:1]):
 							OK = True
 					else:
@@ -308,7 +308,7 @@ def main():
 					OK2 = False
 					#ord(ramp[0:1]) <=  ord(house[0:1]) can pick up ramp to third layer for 3 layer towns, but fuck it
 					for ramp in ramps:
-						if ("1" not in house and "5" not in house) and (("1" in columns and "5" in columns) or ("e" in house)):
+						if ("1" not in house and "5" not in house) and (("1" in columns and "5" in columns) or ("e" in house) or ("3" in fountain.name and (("2" in columns and "5" in columns) or ("1" in columns and "4" in columns)))):
 							if (ord(ramp[1:2]) == ord(house[1:2])) and ord(ramp[0:1]) <=  ord(house[0:1]):
 								OK = True
 						else:
@@ -324,7 +324,6 @@ def main():
 							OK2 = True
 					if not (OK and OK2):
 						housesOkay = False
-						print(str(file) + " lol")
 
 
 			if housesOkay:
