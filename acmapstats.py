@@ -327,7 +327,7 @@ def main():
 						print(str(file) + " lol")
 
 
-			if housesOkay):
+			if housesOkay:
 				if not os.path.exists(directory+"maybe/"):
 					os.makedirs(directory+"maybe/")
 				shutil.copy(directory+file, directory+"maybe/"+file)
