@@ -220,11 +220,12 @@ def main():
 			elif layers == 3:
 				threeLayers += 1
 				
-			c3ledge = False
+			cliffs = []
 			houses = []
 			columns = []
 			rows = []
 			ramps = []
+			purpleHouses = []
 
 			houses.append(fountain.name)
 			columns.append(fountain.name[1:2])
@@ -233,24 +234,25 @@ def main():
 			for square in houseMap.squares:
 				region = im.crop((square.coordinates[0], square.coordinates[1]+yOffset, square.coordinates[0]+50, square.coordinates[1]+50+yOffset))
 				colors = region.getcolors(maxcolors=1000)
-				
 				for color in colors:
 					#blue house = (90, 90, 225, 255)	purple house = (145, 70, 205, 255)	yellow house = (170, 115, 20, 255)
 					if color[1] == (90, 90, 225, 255) or color[1] == (145, 70, 205, 255) or color[1] == (170, 115, 20, 255):
 						houses.append(square.name)
 						columns.append(square.name[1:2])
 						rows.append(square.name[0:1])
+					if color[1] == (145, 70, 205, 255):
+						purpleHouses.append(square.name)
 
 					#ramp
-					if color[1] == (66, 189, 66, 255):
-						ramps.append(square.name)
+					if color[1] == (66, 189, 66, 255) and color[0] > 10:
+							ramps.append(square.name)
 					# ledge
 					if color[1] == (146, 146, 146, 255) or color[1] == (148, 148, 148, 255):
-						if square.name == "c3":
-							c3ledge = True
+						cliffs.append(square.name)
 
-
-			if "f" in rows:
+			if not ((shop.name == "a2" and post.name == "a4") or (shop.name == "a4" and post.name == "a2")):
+				housesOkay = False
+			elif "f" in rows:
 				housesOkay = False
 			elif ("e" in rows and ("1" in columns or "5" in columns)):
 				housesOkay = False
@@ -272,9 +274,9 @@ def main():
 				housesOkay = False
 			elif ("e" in rows) and ((shop.name == "a2" and "4" in columns) or (shop.name == "a4" and "2" in columns)):
 				housesOkay = False
-			elif shop.name == "a2" and (columns.count("5") > 2 if "b5" in houses else (columns.count("5") > 1)) and fountain.name != "c5":
+			elif shop.name == "a2" and (columns.count("5") > (1 + houses.count("b5"))) and fountain.name != "c5":
 				housesOkay = False
-			elif shop.name == "a4" and (columns.count("1") > 2 if "b1" in houses else (columns.count("1") > 1)) and fountain.name != "c1":
+			elif shop.name == "a4" and (columns.count("1") > (1 + houses.count("b1"))) and fountain.name != "c1":
 				housesOkay = False
 
 			#check for ramps to get to fountain
@@ -282,13 +284,12 @@ def main():
 			OK2 = False
 			if housesOkay:
 				for ramp in ramps:
-					if ("1" in columns or "5" in columns) or ("e" in fountain.name and ("1" in columns or "5" in columns)) or (fountain.name == "d4" and (shop.name == "a2" or "2" in columns)) or (fountain.name == "d2" and (shop.name == "a4" or "4" in columns)):
+					if ("1" not in fountain.name and "5" not in fountain.name) and (("1" in columns and "5" in columns) or ("e" in fountain.name)):
 						if (ord(ramp[1:2]) == ord(fountain.name[1:2])) and ord(ramp[0:1]) <  ord(fountain.name[0:1]):
 							OK = True
 					else:
 						if (abs(ord(ramp[1:2]) - ord(fountain.name[1:2])) <= 1 and ord(ramp[0:1]) <  ord(fountain.name[0:1])):
 							OK = True
-
 					if columns.count("2") > 1 and "5" in columns and ("d" in fountain.name or fountain.name == "c5"):
 						if (ord(ramp[1:2]) == ord(fountain.name[1:2])) and ord(ramp[0:1]) <  ord(fountain.name[0:1]):
 							OK2 = True
@@ -301,17 +302,32 @@ def main():
 					housesOkay = False
 
 			#check for ramps to get to houses in d3. d2/d4 houses will always hit this condition.
-			OK = False
-			if "d3" in houses and c3ledge:
-				for ramp in ramps:
-					#if it's 3 layers then the d ramps are either below the house, or there's another cliff at c
-					#that's also in the way, so we need that anyway. If it's 2 layers then it will get us back up
-					if (ramp == "c2" or ramp == "c3" or ramp == "c4") or (layers == 2 and (ramp == "d2" or ramp == "d3" or ramp == "d4")):
-						OK = True
-				if not OK:
-					housesOkay = False
+			if housesOkay:
+				for house in purpleHouses:
+					OK = False
+					OK2 = False
+					#ord(ramp[0:1]) <=  ord(house[0:1]) can pick up ramp to third layer for 3 layer towns, but fuck it
+					for ramp in ramps:
+						if ("1" not in house and "5" not in house) and (("1" in columns and "5" in columns) or ("e" in house)):
+							if (ord(ramp[1:2]) == ord(house[1:2])) and ord(ramp[0:1]) <=  ord(house[0:1]):
+								OK = True
+						else:
+							if (abs(ord(ramp[1:2]) - ord(house[1:2])) <= 1 and ord(ramp[0:1]) <=  ord(house[0:1])):
+								OK = True
+						if columns.count("2") > 1 and "5" in columns and ("d" in house or house == "c5"):
+							if (ord(ramp[1:2]) == ord(house[1:2])) and ord(ramp[0:1]) <=  ord(house[0:1]):
+								OK2 = True
+						elif columns.count("4") > 1 and "1" in columns and ("d" in house or house == "c1"):
+							if (ord(ramp[1:2]) == ord(house[1:2])) and ord(ramp[0:1]) <=  ord(house[0:1]):
+								OK2 = True
+						else:
+							OK2 = True
+					if not (OK and OK2):
+						housesOkay = False
+						print(str(file) + " lol")
 
-			if (housesOkay and ((shop.name == "a2" and post.name == "a4") or (shop.name == "a4" and post.name == "a2")) and not(layers == 3 and "e" in fountain.name)):
+
+			if housesOkay):
 				if not os.path.exists(directory+"maybe/"):
 					os.makedirs(directory+"maybe/")
 				shutil.copy(directory+file, directory+"maybe/"+file)
