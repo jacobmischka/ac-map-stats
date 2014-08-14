@@ -226,6 +226,7 @@ def main():
 			rows = []
 			ramps = []
 			purpleHouses = []
+			orangeHouses = []
 
 			houses.append(fountain.name)
 			columns.append(fountain.name[1:2])
@@ -242,6 +243,8 @@ def main():
 						rows.append(square.name[0:1])
 					if color[1] == (145, 70, 205, 255):
 						purpleHouses.append(square.name)
+					if color[1] == (170, 115, 20, 255):
+						orangeHouses.append(square.name)
 
 					#ramp
 					if color[1] == (66, 189, 66, 255) and color[0] > 10:
@@ -305,7 +308,7 @@ def main():
 				if not (OK and OK2):
 					housesOkay = False
 
-			#check for ramps to get to houses in d3. d2/d4 houses will always hit this condition.
+			#check for ramps to get to purple/orange houses
 			if housesOkay:
 				for house in purpleHouses:
 					OK = False
@@ -329,6 +332,23 @@ def main():
 					if not (OK and OK2):
 						housesOkay = False
 
+				for house in orangeHouses:
+					OK = False
+					acresToCliff = 0
+					if house in cliffs:
+						acresToCliff = 0
+					else:
+						acresToCliff = 1
+
+					for ramp in ramps:
+						if ("1" not in house and "5" not in house) and (("1" in columns and "5" in columns) or ("e" in house) or ("3" in fountain.name and (("2" in columns and "5" in columns) or ("1" in columns and "4" in columns)))):
+							if (ord(ramp[1:2]) == ord(house[1:2])) and ord(ramp[0:1]) >=  ord(house[0:1]) + acresToCliff:
+								OK = True
+						else:
+							if (abs(ord(ramp[1:2]) - ord(house[1:2])) <= 1 and ord(ramp[0:1]) >=  ord(house[0:1]) + acresToCliff):
+								OK = True
+					if not OK:
+						housesOkay = False
 
 			if housesOkay:
 				if not os.path.exists(directory+"maybe/"):
