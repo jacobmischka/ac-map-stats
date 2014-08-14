@@ -278,6 +278,10 @@ def main():
 				housesOkay = False
 			elif shop.name == "a4" and (columns.count("1") > (1 + houses.count("b1"))) and fountain.name != "c1":
 				housesOkay = False
+			elif "c5" in purpleHouses and not ("c5" in ramps or "b5" in ramps) and columns.count("5") > 1:
+				housesOkay = False
+			elif "c1" in purpleHouses and not ("c1" in ramps or "b1" in ramps) and columns.count("1") > 1:
+				housesOkay = False
 
 			#check for ramps to get to fountain
 			OK = False
