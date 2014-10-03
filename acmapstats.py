@@ -128,28 +128,44 @@ houseMap = HouseMap()
 
 def main():
 	skip = 0
-	f = open('skip.txt', 'r+')
-	while True:
+	printStats = False
+	loop = True
+	directory = "./maps/"
+	if len(sys.argv) > 1:
+		directory = sys.argv[1]
+	if len(sys.argv) > 2:
+		skip = int(sys.argv[2])
+	if len(sys.argv) > 3:
+		printStats = sys.argv[3]
+	if len(sys.argv) > 4:
+		loop = sys.argv[4]
+		
+	if printStats == 1 or printStats == "1" or printStats == "true":
+		printStats = True
+		
+	if loop == 0 or loop == "0" or loop == "false":
+		loop = False
+			
+	if os.path.isfile("skip.txt"):
+		f = open("skip.txt", "r+")
+	else:
+		f = open("skip.txt", "w+")
+		
+	while loop:
 		startTime = time.time()
 		fileCount = 0
 		twoLayers = 0
 		threeLayers = 0
-		directory = "./maps/"
+		
 		f.seek(0)
-		skip = int(f.readline())
+		if skip == 0:
+			line = f.readline()
+			if line != "":
+				skip = int(line)
 		most = 0
 		current = 0
 		possiblyDecentMaps = 0
-		printStats = False
-		if len(sys.argv) > 1:
-			directory = sys.argv[1]
-		if len(sys.argv) > 2:
-			skip = int(sys.argv[2])
-		if len(sys.argv) > 3:
-			printStats = sys.argv[3]
 
-		if printStats == 0 or printStats == "0" or printStats == "false":
-			printStats = False
 		files = os.listdir(directory)
 		sort_nicely(files)
 		for file in files:
@@ -380,6 +396,7 @@ def main():
 
 		f.seek(0)
 		f.write(str(fileCount))
+		skip = 0
 		time.sleep(300)
 
 if __name__ == "__main__":
