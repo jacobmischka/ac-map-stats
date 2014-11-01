@@ -389,10 +389,10 @@ def main():
 				print(str("\n"+building.name))
 				for mapsquare in building.acmap.squares:
 							print("\t"+str(mapsquare.name)+":\t"+str(mapsquare.count)+"\t"+str((mapsquare.count/building.count)*100)+"%")
-		print("\nmaps: "+str((fileCount-skip)))
+		#print("\nmaps: "+str((fileCount-skip)))
 		#print("possibly decent maps: "+str(possiblyDecentMaps))
 		#print("Longest bad streak: " +str(most))
-		print("elapsed time: "+str(time.time()-startTime)+" seconds")
+		#print("elapsed time: "+str(time.time()-startTime)+" seconds")
 
 		f.seek(0)
 		f.write(str(fileCount))
